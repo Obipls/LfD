@@ -1,35 +1,38 @@
 2.1.1: 
-yellow: 8/13 = 0,6154
-green: 1/3 = 0,3333
+	yellow: 8/13 = 0,6154
+	green: 1/3 = 0,3333
 
-small: 6/8 = 0,75
-large: 3/8 = 0,375
+	small: 6/8 = 0,75
+	large: 3/8 = 0,375
 
-round: 6/12 = 0,5
-irregular: 3/4 = 0,75
+	round: 6/12 = 0,5
+	irregular: 3/4 = 0,75
 
-Given these statistics, relatively the biggest discriminators for edible fruits are small size and irregular shape, both achieving an accuracy of 75%. Absolutely, the color yellow is the best predictor, as it returns 8 edible fruits.
-See DecTree.pdf
+	Given these statistics, relatively the biggest discriminators for edible fruits are small size and irregular shape, both achieving an accuracy of 75%. Absolutely, the color yellow is the best predictor, as it returns 8 edible fruits.
+	See DecTree.pdf
 
 2.1.2:
 
-Dec Tree:
-Best Features: ~20.000
-Best Depth: ~10
-Samples Leaf: ~15
-Samples Split: ~15
-Pruning is used to guard from overfitting, as every branch of the tree is extended infinitely until each condition is met.
+	Dec Tree:
+	Best Features: ~20.000
+	Best Depth: ~10
+	Samples Leaf: ~15
+	Samples Split: ~15
+	Pruning is used to guard from overfitting, as every branch of the tree is extended infinitely until each condition is met. If pruned, the amount and the length of branches is trimmed, making it performing less on the development set, but better in general.
 
 2.2:
-1A: Higher, peaks at about 20-25
-B: It never gets lower than 69.5 (k=2500)
-C: Not possible with cross validation. Health is still bad, but a lot better than with the decision tree. Books makes the most progress as K increases.
-D: Higher K makes for smaller variance (higher bias), as the classdifferences fade. The overall score drops though
+	1 A: Higher, peaks at about 20-25
+	  B: It never gets lower than 69.5 (k=2500)
+	  C: Not possible with cross validation. Health is still bad, but a lot better than with the decision tree. Books makes the most progress as K increases.
+	  D: Higher K makes for smaller variance (higher bias), as the class differences fade. The overall score drops though
 
-2:
-NB: Time to train: 0.48882412910461426 Time to Test: 0.11607694625854492 Total: 0.6049010753631592
-KNN: Time to train: 0.41727709770202637 Time to Test: 0.7575006484985352 Total: 1.1747777462005615
-DT: Time to train: 1.0056674480438232 Time to Test: 0.10406851768493652 Total: 1.1097359657287598
+	2:
+	NB: Time to train: 0.48882412910461426 Time to Test: 0.11607694625854492 Total: 0.6049010753631592
+	KNN: Time to train: 0.41727709770202637 Time to Test: 0.7575006484985352 Total: 1.1747777462005615
+	DT: Time to train: 1.0056674480438232 Time to Test: 0.10406851768493652 Total: 1.1097359657287598
+
+2.3:
+MultinomialNB(alpha=0.20, fit_prior=False, class_prior=None) performs best on the development set, F1_weighted=0,91 on average. The small alpha makes for almost 2% higher f1, without overfitting the model by learning too deep into the data.
 
 
 

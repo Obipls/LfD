@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline
@@ -33,7 +34,7 @@ def identity(x):
 # Then create for both lists a train and a testdata part consisting of 75% training and 25% test.
 
 
-X, Y = read_corpus('trainset.txt')#use_sentiment=True
+X, Y = read_corpus('trainset.txt')
 split_point = int(0.75*len(X))
 Xtrain = X[:split_point]
 Ytrain = Y[:split_point]
@@ -54,27 +55,54 @@ else:
 
 # combine the vectorizer with a Naive Bayes classifier
 classifier = Pipeline( [('vec', vec),
-						('cls', KNeighborsClassifier(n_neighbors=25, weights='uniform', algorithm='auto', leaf_size=30, p=2, metric='minkowski', metric_params=None, n_jobs=-1))] )
+						('cls', MultinomialNB(alpha=0.20, fit_prior=False, class_prior=None))] )
 
+#KNeighborsClassifier(n_neighbors=25, weights='uniform', algorithm='auto', leaf_size=30, p=2, metric='minkowski', metric_params=None, n_jobs=-1)
 #DecisionTreeClassifier(criterion='gini', splitter='best', max_depth=12, min_samples_split=16, min_samples_leaf=16, min_weight_fraction_leaf=0.0, max_features=20000, random_state=None, max_leaf_nodes=None, class_weight='auto')
-#xvalidator = cross_val_score(classifier,X,y=Y,cv=5,scoring='accuracy') 
-t0=time()
-# Train the classifier with the two lists (75% of total data, consisting of the tags and their labels)
-classifier.fit(Xtrain, Ytrain)
-t1 = time()
-trainTime = t1- t0
-# Apply the freshly trained classifier on the unseens testdata and predict it's label
-Yguess = classifier.predict(Xtest)
-testTime = time() - t1
-totalTime = time()-t0
+#xvalidator = cross_val_score(classifier,X,y=Y,cv=5,scoring='f1_weighted') 
+#t0=time()
+# # Train the classifier with the two lists (75% of total data, consisting of the tags and their labels)
+#classifier.fit(Xtrain, Ytrain)
+#t1 = time()
+#trainTime = t1- t0
+# # Apply the freshly trained classifier on the unseen testdata and predict it's label
+#Yguess = classifier.predict(Xtest)
+#testTime = time() - t1
+#totalTime = time()-t0
+
+
+
 
 # Print the achieved score in predicting the labels of the unseen goldstandardized testdata.
 #print(accuracy_score(Ytest,Yguess))
-print("Time to train: {} Time to Test: {} Total: {}".format(trainTime,testTime,totalTime))
-print(classification_report(Ytest, Yguess))
-#print(classifier.get_params(Xtest))
-#print(classifier.predict_proba(Xtest))
+#print("Time to train: {} Time to Test: {} Total: {}".format(trainTime,testTime,totalTime))
+#print(classification_report(Ytest, Yguess))
 #print(sum(xvalidator)/5)
+
+
+# uncomment for graph
+scoreList = ['f1_weighted', 'accuracy']
+folds = 5
+fList=[]
+aList=[]
+for i in range(100):
+	classifier = Pipeline( [('vec', vec),
+						('cls', KNeighborsClassifier(n_neighbors=i+1, weights='uniform', algorithm='auto', leaf_size=30, p=2, metric='minkowski', metric_params=None, n_jobs=-1))] )
+	for term in scoreList:
+		xvalidator = cross_val_score(classifier,X,y=Y,cv=folds,scoring=term)
+		if term == 'f1_weighted': 
+			fList.append(sum(xvalidator)/folds)
+		else:
+			aList.append(sum(xvalidator)/folds)
+plt.clf()
+
+plt.plot(fList, label='F-Score')
+plt.plot(aList, label='Accuracy')
+plt.xlabel('K')
+plt.ylabel('Score')
+plt.xlim([0.0, 100.0])
+plt.legend(loc="lower left")
+plt.show()
 
 
 

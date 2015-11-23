@@ -8,7 +8,7 @@ import sys
 # Open the corpus file, loop through it and for every line create a list op tokens, cut first 3 words off. 
 # Then, depending on use_sentiment argument, add binary labels of multi labels. Return the two lists
 def read_corpus(corpus_file, argv):
-	pos=neg=books=camera=health=music=software=0
+	pos=neg=books=camera=health=dvd=music=software=0
 	documents = []
 	labels = []
 	with open(corpus_file, encoding='utf-8') as f:
@@ -26,10 +26,35 @@ def read_corpus(corpus_file, argv):
 				# 2-class problem: positive vs negative
 				labels.append( tokens[1] )
 			elif argv[1]=="multi":
+				if tokens[0] == "books":
+					books+=1
+				elif tokens[0] == "camera":
+					camera+=1
+				elif tokens[0] == "health":
+					health+=1
+				elif tokens[0] == "music":
+					music+=1
+				elif tokens[0] == "dvd":
+					dvd+=1
+				else:
+					software+=1
+
 				# 6-class problem: books, camera, dvd, health, music, software
 				labels.append( tokens[0] )
-	print("priorpos= ", pos/(pos+neg))
-	print("priorneg= ", neg/(pos+neg) )			
+
+	if argv[1]=="binary":
+		print("prior pos= ", pos/(pos+neg))
+		print("prior neg= ", neg/(pos+neg))
+	
+	else:
+		total=books+camera+health+music+software
+		print (books)
+		print("prior books= ", books/total)
+		print("prior camera= ", camera/total) 	
+		print("prior health= ", health/total) 	
+		print("prior music= ", music/total) 	
+		print("prior software= ", software/total) 	
+		print("prior dvd= ", dvd/total) 			
 	return documents, labels
 	
 # a dummy function that just returns its input
@@ -74,6 +99,8 @@ else:
 
 	# Print the achieved score in predicting the labels of the unseen goldstandardized testdata.
 	print(classification_report(Ytest, Yguess))
+	print(classifier.get_params(Xtest))
+	print(classifier.predict_proba(Xtest))
 
 	
 

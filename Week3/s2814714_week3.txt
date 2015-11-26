@@ -1,0 +1,42 @@
+3.1.1: Python, expected snakes and programming languages, only got snakes.
+Olivier ,expected male names, got all French names
+
+
+3.1.2:
+1: Polysemy is the multiple senses that a word can have, which all are related to each other. 
+Homonomy is the multiple meanings that a word can have, regardless of the relation between them.
+This relation part is the difference between the two, separating a polynym from a homonym.
+2: Word embeddings show which words are close to each other, and therefore are likely, but not necesarily, senses for the same word. 
+They also can be senses for a different word, that is close to it.
+3:
+
+3.1.3: cacao chocolat bean: croque_madame		0.585773
+                                  yam_fries		0.571849
+                                  haricot_verts		0.566160
+Bean soup is not really comparable to chocolat
+
+
+teacher class mayor  Mayor		0.467516
+                     mayoral		0.437825
+                     city		0.431009
+Close together, but it comes up with the right one eventually
+
+table legs car minvan		0.513069
+               vehicle		0.492950
+               bike		0.479566
+To hard a concept to grasp
+
+Both times cookies comes up first, but with 10% difference in distance.  Maybe because the smaller training set also has less
+similar vectors, the size of the total vector space is also smaller.
+
+
+3.2.1: 
+Binary:
+Classification accuracy: 0.894145409597
+Most Frequent Class Baseline= 0.6661297572670063, very significant!
+
+Six-way:
+Classification accuracy: 0.815260141589
+Most Frequent Class Baseline= 0.31753820797123167, very significant!
+
+

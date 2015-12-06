@@ -10,7 +10,8 @@ This relation part is the difference between the two, separating a polynym from 
 They also can be senses for a different word, that is close to it.
 3:
 
-3.1.3: cacao chocolat bean: croque_madame		0.585773
+3.1.3: 
+cacao chocolat bean: croque_madame		0.585773
                                   yam_fries		0.571849
                                   haricot_verts		0.566160
 Bean soup is not really comparable to chocolat
@@ -21,10 +22,12 @@ teacher class mayor  Mayor		0.467516
                      city		0.431009
 Close together, but it comes up with the right one eventually
 
+
 table legs car minvan		0.513069
                vehicle		0.492950
                bike		0.479566
 To hard a concept to grasp
+
 
 Both times cookies comes up first, but with 10% difference in distance.  Maybe because the smaller training set also has less
 similar vectors, the size of the total vector space is also smaller.
@@ -39,4 +42,31 @@ Six-way:
 Classification accuracy: 0.815260141589
 Most Frequent Class Baseline= 0.31753820797123167, very significant!
 
+
+3.2.2:
+Binary: n_iter has a large influence on the classification, and adds up to almost 3% (n~20). Making more passes gives the perceptron the opportunity to change it weights, adapting better to the data. eta0 has no effect on the result, whether it is 0.1 or 99.9.
+Multi: the number of Epochs has a small influence, peaking at about 1.5% higher(n~10). eta0 has no significant effect whatsoever, keeping the result always at 82.7
+Any other parameter has no significant positive effect as well, with the elastic net penalty scoring the all time lowest scores(<80%).
+
+
+3.2.3:
+In data: Helsinki, Oslo, Stockholm (GPE)
+Not in data: Reykjavik
+Classified as: Person or ORG, Non-Location if binary. -> NO
+
+In data: one-twelve (Cardinal)
+Not in data: thirteen
+Classified as: Person or ORG, Non-Location if binary. -> 1/3 correct
+
+In data: Army, Navy, Marines, Forces (ORG)
+Not in data: Air Force
+Classified as: Person or ORG, Non-Location if binary. -> 2/3 correct
+
+
+3.2.4:
+As shown in Conf_Matrix.png, the biggest confusion is with Cardinal numbers being predicted as date(~1000). Person and organisation also are confused often, in both directions(~500)
+Organisations and Cardinals both are sometimes predicted as being GPE's, but only in a small percentage of the cases.
+Location is among the least confused, but it is also the smallest class. Dates is in few cases confused with Organisations, but is overall very uniform.  
+The big confusion with numbers and dates is very self explanatory, as even for a human it can be hard to distinguish the  two, and they will be very close in vector space. The same goes for organisations and persons, one often named after the other and both used in very alike sentences. 
+GPE's, being by far the largest class are rarely confused, which makes them very standalone in the vector space.
 

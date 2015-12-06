@@ -1,7 +1,8 @@
 from sklearn.linear_model import Perceptron
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, confusion_matrix
 import numpy, pickle, os
 from collections import Counter
+import matplotlib.pyplot as plt
 
 # Read in the NER data, with either 2 or 6 classes
 def read_corpus(corpus_file, binary_classes):
@@ -54,7 +55,7 @@ def vectorizer(words, embeddings):
    
 
 # Read in the data, split into train and test data, and read in the embeddings
-X, Y = read_corpus('NER_data.txt', True)
+X, Y = read_corpus('NER_data.txt', False)
 embeddings = read_embeddings('glove.6B.50d.txt')
 X = vectorizer(X, embeddings)
 split_point = int(0.75*len(X))
@@ -64,11 +65,26 @@ Xtest = X[split_point:]
 Ytest = Y[split_point:]
 
 # Combine the vectorizer with a Perceptron classifier
-classifier = Perceptron(penalty=None, alpha=0.0001, fit_intercept=True, n_iter=5, shuffle=True, verbose=1, eta0=1.0, n_jobs=1, random_state=0, class_weight=None, warm_start=False)
+classifier = Perceptron(penalty=None, alpha=0.0001, fit_intercept=True, n_iter=20, shuffle=True, verbose=1, eta0=0.1, n_jobs=1, random_state=0, class_weight=None, warm_start=False)
 
 # Train the classifier
 classifier.fit(Xtrain, Ytrain)
 # Classify the test data  
 Yguess = classifier.predict(Xtest)
 print('Classification accuracy: %s' % (accuracy_score(Ytest, Yguess)))
+cm=confusion_matrix(Ytest, Yguess, labels=list(set(Y)))
+print(cm)
 print("Most Frequent Class Baseline= {}, very significant!".format(Counter(Ytrain).most_common(1)[0][1]/sum(Counter(Ytrain).values())))
+print(classifier.predict(vectorizer('Air Force',embeddings)))
+
+plt.figure()
+plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
+plt.title('Confusion Matrix of multi label Perceptron classification')
+plt.colorbar()
+tick_marks = numpy.arange(len(list(set(Y))))
+plt.xticks(tick_marks, list(set(Y)), rotation=45)
+plt.yticks(tick_marks, list(set(Y)))
+plt.tight_layout()
+plt.ylabel('True label')
+plt.xlabel('Predicted label')
+plt.show()

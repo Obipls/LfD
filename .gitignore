@@ -22,6 +22,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+*.npy
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -56,5 +57,7 @@ docs/_build/
 # PyBuilder
 target/
 
-# Pickels
+# Pickles
 *.pickle
+
+

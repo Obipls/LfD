@@ -1,30 +1,27 @@
 #!/usr/bin/env python
-# Prevent sklearn from throwing 1000's of warnings using n_jobs = -1
-import warnings
-warnings.filterwarnings("ignore")
 
-
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.svm import SVC
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import accuracy_score, classification_report
+from nltk.stem.wordnet import WordNetLemmatizer
 import sys
 
 def read_corpus(corpus_file):
+	wnl = WordNetLemmatizer()
 	ngrams = 2
 	documents=[]
 	labels=[]
 	with open(corpus_file, encoding='utf-8') as f:
 		for line in f:
 			tokens=line.strip().split()
+			lemmedTokens = [wnl.lemmatize(token) for token in tokens[3:]]
 			if ngrams == 1:
-				documents.append(tokens[3:])
+				documents.append(lemmedTokens)
 			if ngrams == 2:
-				documents.append(zip(tokens[3:], tokens[3:][1:]))
+				documents.append(zip(lemmedTokens, lemmedTokens[1:]))
 			if ngrams == 3:
-				documents.append(zip(tokens[3:], tokens[3:][1:], tokens[3:][2:]))
-			if ngrams == 4:
-				documents.append(zip(tokens[3:], tokens[3:][1:], tokens[3:][2:], tokens[3:][3:]))
+				documents.append(zip(lemmedTokens, lemmedTokens[1:], lemmedTokens[2:]))
 			labels.append(tokens[1])
 	return documents, labels
 

@@ -1,22 +1,33 @@
 5.1.1:
 Used 50/50 split in trainingdata as development set.
-See results.pdf for table of results. 
-Accuracy is 0.81, probably low due to small training sample.
+See Table 1 for full results. 
+Accuracy is 0.81, probably low due to small training sample. Almost every step after this increased the score, and enlarging the training set to 0.75 also helped in this.
 
 5.1.2:
 Affecting C seems not to influence the score positively, whether it is increased up till 10, or decreased down till 0.1
-C is used for maximization of the margin, making for a broader terrain (the lower C is)around the axis that is not being taken into account.
-The larger the C, the larger the penalty for errors.
+C is used for maximization of the margin, making for a broader terrain (the lower C is) around the axis that is not being taken into account.
+The larger the C, the larger the penalty for errors because if a sample is found in the narrow margin, it is an indicator that the axis is not yet optimal.
 
 5.1.3:
 RBF scores at least as well as linear, and with altered values does it even better.
 (acc. =0.81 with c=1 and gamma =0.7)
-It certainly is not oufperformed by the linear kernel.
+It certainly is not significantly outperformed by the linear kernel.
 
 5.1.4:
-Best script uses bigrams and english stopwords build into sklearn.
-performs 0,82 accuracy. Best at recall of negative (0,83)
+Best script uses bigrams and english stopwords build into sklearn. Of all stemmers the Wordnet Lemmatizer performs best.
+In the results it looks like it exchanges just 0.1 with the lancaster stemmer regarding  negative precision versus positive recall,
+but in the raw accuracy number it goes up about 0.3.
+POS tagging took an incredible amount of time resources and is therefore not shown in the results. 
 
-5.2:
+
+5.2.1:
+1: The CM (see CM_KM_ML.png) is distributed pretty well, except music that is almost always confused with health and dvd.
+2: Health itself is confused with almost every other class, being the most confused class.
+3: The scores obtained do not reach over 30%, so the system is not very good at clustering into these 6 classes (see table 2). The rand index is even lower than the V measure, not going higher than 18%. Using a stemmer or lemmatizer offers a slight improvement, but still the clusters are formed rather poorly. The amount of new centroid initiations also has a decreasing effect on the score, so somehow the first choice for the centroids is immediately the best. This can be explained by the compute parameter set to true, in which the system takes its time (and memory) to try to go for a good spot for the centroid placements.  One very strange observation is that ngrams don't work at all, and limit the classifier in its performance a lot. Using bigrams, all instances are placed in one cluster, for a reason that is unclear till now.
+
+
+5.2.2:
+The articles about music and books will be clustered, but somehow kmeans clusters almost every instance into one cluster. The ri and v measure are extremely small, and do not go up by chainging any parameter or stemmer. Using sentiment it performs slightly better, but still the scores are rounded to zero (3 decimals).
+the numbers are too small to make any significant difference visible, so a discriminative set of features to favour on over the other also is not possible.
 
 

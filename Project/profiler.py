@@ -14,9 +14,9 @@ def main(usage,language):
 				parser = etree.XMLParser(recover=True)
 				tree=ET.parse(open(usage+'/'+subdir[9:]+'/'+filename,'r', encoding='utf-8', errors="surrogateescape"),parser=parser)
 				root=tree.getroot()
-				if root != None:
-					for child in root:
-						print(child.text)
+				#if root != None:
+				for child in root:
+					print(child.text)
 
 
 

@@ -14,6 +14,7 @@ def load_data():
 	nb_features = X_train.shape[1]
 	nb_classes = np.max(y_train)+1
 	print(nb_classes, 'classes')
+	print(X_train)
 
 	X_train = X_train
 	X_test = X_test

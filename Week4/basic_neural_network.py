@@ -37,6 +37,8 @@ class KerasNN(object):
         print(len(X_test), 'test instances')
 
         self.nb_features = X_train.shape[1]
+        print(X_train.shape)
+        print("dinges", self.nb_features)
         self.nb_classes = np.max(y_train)+1
         print(self.nb_classes, 'classes')
 
@@ -81,6 +83,7 @@ class KerasNN(object):
     def test_model(self):
         outputs = self.model.predict(self.X_test, batch_size=self.batch_size)
         pred_classes = np.argmax(outputs, axis=1)
+        print(pred_classes)
 
         np.save(self.name, pred_classes)
 # Several 'classic' parameters that change the performance significantly (+50% in the best case)

@@ -1,11 +1,11 @@
 #!/usr/bin/python3.5
 
-import sys, os, numpy
+import sys, os, numpy, re
 import xml.etree.ElementTree as ET
 from lxml import etree
-from collections import namedtuple
+from collections import namedtuple, Counter
 from keras.preprocessing.text import *
-
+from basic_neural_network import NNclassify
 
 def main(path):
 	documents=[]
@@ -35,7 +35,7 @@ def main(path):
 					XMList.append(one_hot(child.text, 100, filters=base_filter(), lower=True, split=" "))
 					for label in labels:
 						if label.ID == filename[:-4]:
-							gold.append((label.Gender,label.Age))
+							gold.append(label)
 				if XMList not in documents:
 					documents.extend(XMList)
 	
@@ -43,25 +43,45 @@ def main(path):
 
 
 if __name__ == '__main__':
+	test = False
 	langs=['dutch','english', 'spanish', 'italian']
 	if len(sys.argv) ==3:
-		if sys.argv[2]=='all':
-			for i,lang in enumerate(langs):
-				path=sys.argv[1]+'/'+lang
-				X,Y=main(path)
+		path='training/'+sys.argv[2]
+		X,Y=main(path)
+		if sys.argv[1]=='testing':
+			test=True
 
-		else:
-			path=sys.argv[1]+'/'+sys.argv[2]
-			X,Y=main(path)
+
 	else:
 		print('Usage: profiler.py <training/testing> <language/all>',langs)
 
+
+
 	split=int(0.8*(len(X)))
 	Xtrain=X[:split]
-	Ytrain=Y[:split]
+	YgenTrain=[Y.Gender for Y in Y][:split]
+	YageTrain=[Y.Age for Y in Y][:split]
 	Xtest=X[split:]
-	Ytest=Y[split:]
-	numpy.save('Xtrain',Xtrain)
-	numpy.save('Xtest',Xtest)
-	numpy.save('Ytrain',Ytrain)
-	numpy.save('Ytest',Ytest)
+	YgenTest=[Y.Gender for Y in Y][split:]
+	YageTest=[Y.Age for Y in Y][split:]
+	print("Test (gen,age):")
+	print(Counter(YgenTest))
+	print(Counter(YageTest))
+	print("Train (gen,age):")
+	print(Counter(YgenTrain))
+	print(Counter(YageTrain))
+
+
+	gender=NNclassify(Xtrain,Xtest,YgenTrain,YgenTest,'binary')
+	age=NNclassify(Xtrain,Xtest,YageTrain,YageTest,'categorical')
+
+	if test:
+		Xrev, Yrev= main('testing/'+sys.argv[2])
+		newTruth=open('testing/'+sys.argv[2]+'/truth.txt', 'a')
+		for i,rev in enumerate(Yrev):
+			newGen=rev._replace(Gender=gender[i])
+			newAge=newGen._replace(Age=age[i])
+			newTruth.write(newAge)
+		newTruth.close()
+
+

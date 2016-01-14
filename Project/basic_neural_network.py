@@ -4,17 +4,25 @@ np.random.seed(1337)  # for reproducibility
 
 from keras.datasets import reuters
 from keras.models import Sequential
-from keras.layers.core import Dense, Dropout, Activation, MaxoutDense
+from keras.layers.core import Dense, Dropout, Activation, MaxoutDense, Reshape
+from keras.layers.convolutional import Convolution2D, MaxPooling2D
+from keras.layers.embeddings import Embedding
 from keras.layers.normalization import BatchNormalization
 from keras.utils import np_utils
 from keras.preprocessing.text import Tokenizer
 from collections import Counter
 
-max_words = 500
-batch_size = 32
-nb_epoch = 5
+
 
 def NNclassify(X_train,X_test,y_train,y_test,inputtype):
+	classtype="gender"
+	max_words=1000
+	batch_size=32
+	nb_epoch=20
+	if inputtype=='categorical':
+		nb_epoch=10
+		classtype="age"
+
 	print('Loading data...')
 	print(len(X_train), 'train instances')
 	print(len(X_test), 'test instances')
@@ -37,11 +45,22 @@ def NNclassify(X_train,X_test,y_train,y_test,inputtype):
 
 	print('Building model...')
 	model = Sequential()
-	model.add(MaxoutDense(1, input_shape=(max_words,)))
-	model.add(Activation('sigmoid'))
-	model.add(Dropout(0.1))
-	model.add(MaxoutDense(nb_classes,max_words))
-	model.add(Activation('sigmoid'))
+
+	# model.add(Embedding(max_words, 256)) # embed into dense 3D float tensor (samples, maxlen, 256)
+	# model.add(Reshape(1, 64, 256)) # reshape into 4D tensor (samples, 1, maxlen, 256)
+	# # VGG-like convolution stack
+	# model.add(Convolution2D(32, 3, 3, 3, border_mode='valid')) 
+	# model.add(Activation('relu'))
+	# model.add(Convolution2D(32, 32, 3, 3))
+	# model.add(Activation('relu'))
+	# model.add(MaxPooling2D(poolsize=(2, 2)))
+	# model.add(Dropout(0.25))
+	# model.add(Flatten())
+
+	model.add(MaxoutDense(10, input_shape=(max_words,)))
+	model.add(Dropout(0.7))
+	model.add(Dense(nb_classes,init='uniform'))
+	model.add(Activation('softmax'))
 
 	model.compile(loss='categorical_crossentropy', optimizer='adam',class_mode=inputtype)
 	history = model.fit(X_train, Y_train, nb_epoch=nb_epoch, batch_size=batch_size, verbose=1, show_accuracy=True, validation_split=0.1)
@@ -52,5 +71,9 @@ def NNclassify(X_train,X_test,y_train,y_test,inputtype):
 	prediction=model.predict(X_test, batch_size=batch_size, verbose=1)
 	pred_classes = np.argmax(prediction, axis=1)
 	print(Counter(pred_classes))
+
+	results=open('results.txt', 'a')
+	results.write("{} \t {} features \t {} epochs \t {} batch size \t {} accuracy \n".format(classtype, max_words, nb_epoch, batch_size,score[1]))
+	results.close()
 
 	return pred_classes

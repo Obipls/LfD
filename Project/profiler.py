@@ -8,14 +8,16 @@ from keras.preprocessing.text import *
 from basic_neural_network import NNclassify
 from sklearn.cross_validation import train_test_split as TTS
 from nltk.stem.snowball import SnowballStemmer
-from itertools import chain
 
 
 def main(path,language):
 	SS = SnowballStemmer(language)
 	documents=[]
+	ngrams=[]
+	uniquegrams={}
 	labels=[]
 	gold=[]
+	i=0
 
 	with open(path+'/'+'truth.txt', encoding='utf-8') as f:
 		for line in f:
@@ -30,24 +32,32 @@ def main(path,language):
 	#Loop over all XML's
 	for subdir, dirs, files in os.walk(path):
 		for filename in files:
-			ngramList=[]
 			if filename.endswith('xml'):
 				#print(filename)
 				XMList=[]
 				parser=etree.XMLParser(recover=True)
 				tree=ET.parse(open(path+'/'+filename,'r', encoding='utf-8', errors="surrogateescape"),parser=parser)
 				root=tree.getroot()
+
 				for child in root:
 					lemmedTokens = [SS.stem(token) for token in child.text.split()]
-					bigrams = list(chain.from_iterable(zip(lemmedTokens,lemmedTokens[1:])))
-					XMList.append(one_hot(" ".join(bigrams), 1000, filters=base_filter(), lower=True, split=" "))
+					ngrams.append(list(zip(lemmedTokens, lemmedTokens[1:])))
+					XMList.append(one_hot(" ".join(lemmedTokens), 1000, filters=base_filter(), lower=True, split=" "))
 					for label in labels:
 						if label.ID == filename[:-4]:
 							gold.append(label)
 				if XMList not in documents:
 					documents.extend(XMList)
+	for x,ngram in enumerate(ngrams):
+		for bigram in ngram:
+			uniquegrams[i]=bigram
+			i+=1
+	n_tweets=x
+	n_features=max(uniquegrams, key=int)
+	X_ngrams = np.zeros((n_tweets, n_features), dtype=np.float64)
+	X_extended = np.hstack( (documents, X_ngrams) )
 	
-	return documents,gold
+	return X_extended,gold
 
 
 if __name__ == '__main__':

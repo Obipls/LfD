@@ -134,3 +134,7 @@ gender 	 1000 features 	 20 epochs 	 32 batch size 	 0.607035175879397 accuracy
 age 	 1000 features 	 10 epochs 	 32 batch size 	 0.5768844221105528 accuracy 
 gender 	 1000 features 	 20 epochs 	 32 batch size 	 0.6346733668341709 accuracy 
 age 	 1000 features 	 10 epochs 	 32 batch size 	 0.6020100502512563 accuracy 
+gender 	 1000 features 	 20 epochs 	 32 batch size 	 0.6341708542713568 accuracy 
+age 	 1000 features 	 10 epochs 	 32 batch size 	 0.6005025125628141 accuracy 
+gender 	 1000 features 	 20 epochs 	 32 batch size 	 0.635678391959799 accuracy 
+age 	 1000 features 	 10 epochs 	 32 batch size 	 0.592964824120603 accuracy 

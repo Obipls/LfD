@@ -46,17 +46,6 @@ def NNclassify(X_train,X_test,y_train,y_test,inputtype):
 	print('Building model...')
 	model = Sequential()
 
-	# model.add(Embedding(max_words, 256)) # embed into dense 3D float tensor (samples, maxlen, 256)
-	# model.add(Reshape(1, 64, 256)) # reshape into 4D tensor (samples, 1, maxlen, 256)
-	# # VGG-like convolution stack
-	# model.add(Convolution2D(32, 3, 3, 3, border_mode='valid')) 
-	# model.add(Activation('relu'))
-	# model.add(Convolution2D(32, 32, 3, 3))
-	# model.add(Activation('relu'))
-	# model.add(MaxPooling2D(poolsize=(2, 2)))
-	# model.add(Dropout(0.25))
-	# model.add(Flatten())
-
 	model.add(MaxoutDense(10, input_shape=(max_words,)))
 	model.add(Dropout(0.7))
 	model.add(Dense(nb_classes,init='uniform'))

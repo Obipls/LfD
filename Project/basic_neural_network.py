@@ -16,7 +16,7 @@ from collections import Counter
 
 def NNclassify(X_train,X_test,y_train,y_test,inputtype):
 	classtype="gender"
-	max_words=1000
+	max_words=10000
 	batch_size=32
 	nb_epoch=20
 	if inputtype=='categorical':

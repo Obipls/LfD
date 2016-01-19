@@ -55,14 +55,14 @@ def main(path,language):
 						if len(uniquewords.get(token)) > 1:
 							tweet.append(uniquewords.get(token)[0])
 
-					tweetHot=one_hot(" ".join(lemmedTokens), 150000, filters=base_filter(), lower=True, split=" ")
-					XMList.append(tweet)
+					tweetHot=one_hot(" ".join(lemmedTokens), 10000, filters=base_filter(), lower=True, split=" ")
+					XMList.append(tweetHot)
 					for label in labels:
 						if label.ID == filename[:-4]:
 							gold.append(label)
 				if XMList not in documents:
 					documents.extend(XMList)
-
+	print(max(uniquewords.values()))
 	return documents,gold
 
 

@@ -46,7 +46,7 @@ def NNclassify(X_train,X_test,y_train,y_test,inputtype):
 	print('Building model...')
 	model = Sequential()
 
-	model.add(MaxoutDense(10, input_shape=(max_words,)))
+	model.add(MaxoutDense(100, input_shape=(max_words,)))
 	model.add(Dropout(0.7))
 	model.add(Dense(nb_classes,init='uniform'))
 	model.add(Activation('softmax'))

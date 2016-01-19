@@ -3,18 +3,19 @@
 import sys, os, numpy, re
 import xml.etree.ElementTree as ET
 from lxml import etree
-from collections import namedtuple, Counter
+from collections import namedtuple, Counter, defaultdict
 from keras.preprocessing.text import *
 from basic_neural_network import NNclassify
 from sklearn.cross_validation import train_test_split as TTS
 from nltk.stem.snowball import SnowballStemmer
+from operator import itemgetter
 
 
 def main(path,language):
 	SS = SnowballStemmer(language)
 	documents=[]
-	ngrams=[]
-	uniquegrams={}
+
+	uniquewords=defaultdict(list)
 	labels=[]
 	gold=[]
 	i=0
@@ -40,24 +41,29 @@ def main(path,language):
 				root=tree.getroot()
 
 				for child in root:
+					tweet = []
+					ngrams=[]
 					lemmedTokens = [SS.stem(token) for token in child.text.split()]
 					ngrams.append(list(zip(lemmedTokens, lemmedTokens[1:])))
-					XMList.append(one_hot(" ".join(lemmedTokens), 1000, filters=base_filter(), lower=True, split=" "))
+					for ngram in ngrams:
+						for bigram in ngram:
+							lemmedTokens.append(str(bigram))					
+
+					for token in lemmedTokens:
+						uniquewords[token].append(i)
+						i+=1
+						if len(uniquewords.get(token)) > 1:
+							tweet.append(uniquewords.get(token)[0])
+
+					tweetHot=one_hot(" ".join(lemmedTokens), 150000, filters=base_filter(), lower=True, split=" ")
+					XMList.append(tweet)
 					for label in labels:
 						if label.ID == filename[:-4]:
 							gold.append(label)
 				if XMList not in documents:
 					documents.extend(XMList)
-	for x,ngram in enumerate(ngrams):
-		for bigram in ngram:
-			uniquegrams[i]=bigram
-			i+=1
-	n_tweets=x
-	n_features=max(uniquegrams, key=int)
-	X_ngrams = np.zeros((n_tweets, n_features), dtype=np.float64)
-	X_extended = np.hstack( (documents, X_ngrams) )
-	
-	return X_extended,gold
+
+	return documents,gold
 
 
 if __name__ == '__main__':
